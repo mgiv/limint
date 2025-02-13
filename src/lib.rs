@@ -7,6 +7,12 @@ pub struct ULimInt {
     true_value: usize // Just for debug, might be removed
 }
 
+impl ULimInt {
+    pub fn to_int(&self) -> usize {
+        self.limit * self.overflow + self.value
+    }
+}
+
 pub trait ToLimInt {
     fn to_limint(&self, limit: usize) -> ULimInt;
 }
@@ -60,5 +66,18 @@ mod tests {
         assert_eq!(ulimint.true_value, value);
         println!("{:?}\n\n {}", ulimint, value);
     }
+    #[test]
+    fn to_int() {
+        let mut rand = id() as usize;
 
+        for _ in 1..1000 {
+            rand = cheap_rand(rand);
+            let limit = cheap_rand(rand);
+            rand = cheap_rand(rand);
+            let value = cheap_rand(rand);
+            let ulimint = value.to_limint(limit);
+            assert_eq!(ulimint.true_value, ulimint.to_int());
+            println!("{:?}\n\n {}", ulimint, value);
+        }
+    }
 }
